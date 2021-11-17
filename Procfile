@@ -1,0 +1,1 @@
+web: gunicorn mangusta-alerts:app -w 1 --threads 2

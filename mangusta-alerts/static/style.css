@@ -1,0 +1,248 @@
+body {
+	/*font-family: BinancePlex!important;*/
+	background-color: rgb(255, 255, 255);
+	font-size: 100%;
+	font-family: Lato;
+}
+
+canvas {
+	-moz-user-select: none;
+	-webkit-user-select: none;
+	-ms-user-select: none;
+}
+
+.dialog_box {
+	position: fixed;
+	left: 50%;
+	top: 50%;
+	transform: translate(-50%, -50%);
+	text-align: center;
+	align-content: center;
+}
+
+.center_horiz {
+	position: fixed;
+	left: 50%;
+	transform: translate(-50%);
+	align-content: center;
+}
+
+.navbar {
+	border-radius: 0px !important;
+}
+
+.logo {
+	width: 200px;
+	padding: 0.5em;
+}
+
+.fondo_transparente {
+	display: none;
+	position: fixed;
+	top: 0px;
+	left: 0px;
+	width: 100%;
+	height: 100%;
+	background-color: rgba(0, 0, 0, 0.4);
+	z-index: 1;
+	align-content: center;
+}
+
+.colorFondo {
+	background-color: rgba(255, 255, 255, 1)!important;
+}
+
+.console {
+	font-family: 'Courier New', Courier, monospace;
+	font-size: 0.8em!important;
+	background-color: rgb(33, 40, 51)!important;
+	color: rgba(255, 255, 255, 1);
+}
+
+.container {
+	width: 100%;
+	padding-top: 20px;
+	padding-left: 20px;
+	padding-right: 20px;
+}
+
+.right {
+	align-content: right;
+	padding-bottom: 0.4em;
+	padding-left: 1em;
+}
+
+.inline {
+	display: inline-block;
+}
+
+.tabla {
+	width: 100%;
+	border-spacing: 0px;
+	padding: 0;
+	margin: 0;
+}
+
+.gris {
+	color: rgb(140, 140, 140);
+}
+
+.link {
+
+}
+
+.link:hover {
+	color: rgb(240, 185, 11);	
+}
+
+.naranja_binance {
+	color: rgb(240, 185, 11);
+}
+
+.red {
+	color: rgb(200, 0, 0);
+}
+
+.green {
+	color: rgb(0, 200, 0);
+}
+
+.valor_patrimonial {
+	font-size: 1em;
+	padding-top: .4em;
+}
+
+.usuario {
+	display: inline;
+	font-size: 1.05em;
+	padding-bottom: .6em;
+}
+
+.editar_clientes {
+	display: inline;
+	float: right;
+}
+
+.delta {
+	font-size: 1.3em;
+	padding-left: .5em;
+}
+
+.saldo {
+	font-size: 2em;
+	color: rgb(0, 0, 0);
+	padding-top: 0.3em;
+	padding-bottom: 0.5em;
+}
+
+.actualizar {
+	float: right;
+}
+
+.clearfix_div {
+	overflow: auto;
+	padding-bottom: .3em;
+	position: relative;
+}
+
+.last_update {
+	font-size: 0.8em;
+	color: rgb(160, 160, 160);
+	position: absolute;
+	bottom: 0px;
+}
+
+.linea_division {
+	padding-top: 0.4em;
+	background-color: rgb(235, 235, 235);
+}
+
+.logo_crypto {
+	width: 24px;
+	padding: 5px 5px 0px 0px;
+}
+
+.ticker_crypto {
+	margin: 0;
+	padding-top: 0px;
+	font-size: 1.4em;
+ }
+
+.nombre_crypto {
+	font-size: 0.9em;
+	color: rgb(180, 180, 180);
+	padding-bottom: 1em;
+}
+
+.precio_crypto {
+	font-size: 1.2em;
+	width: 50%;
+	text-align: right;
+}
+
+.precio_crypto_usdt {
+	font-size: 0.9em;
+	color: rgb(180, 180, 180);
+	width: 50%;
+	text-align: right;
+	padding-bottom: 1em;
+}
+
+.botonBinance {
+	background-image: linear-gradient(rgb(248, 209, 47) 0%, rgb(240, 185, 11) 100%);
+	color: rgb(33, 40, 51);
+	padding: 6px 16px;
+	border: none;
+	border-radius: 4px;
+	font-family: Lato;
+}
+
+button:disabled {
+	display: none;
+	/* background-image: linear-gradient(rgb(134, 133, 126) 0%, rgb(109, 107, 101) 100%)!important;
+	color: rgb(197, 200, 206)!important; */
+}
+
+.graficos {
+	display: inline-block;
+	padding-right: 20px;
+	padding-bottom: 20px;
+	width: 55%;
+	vertical-align: top;
+	align-content: top;
+}
+
+.lista_cryptos {
+	display: inline-block;
+	padding: 0;
+	margin: 0;
+	width: 44%;
+}
+
+@media (max-width: 599px) {
+	.hideOnPhone {
+		display: none;
+	}
+	.floatOnPhone {
+		float: left;
+	}
+	.logo {
+		display: block!important;
+	}
+	.displayBlockOnPhone {
+		display: block!important;
+		width: 100% !important;
+	}
+}
+
+@media (min-width: 600px) and (max-width: 860px) {
+	.floatOnPhone {
+		float: left;
+	}
+}
+
+@media (min-width: 861px) {
+	.tope-width {
+		width: 400px;
+	}
+}

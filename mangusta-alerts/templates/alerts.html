@@ -1,0 +1,76 @@
+{% extends "layout.html" %}
+{% block content %}
+
+<body>
+
+<div class="ui container">
+  <div class="ui grid">  
+    <div class="two column row">
+      <div class="left floated column">
+        <h2>Alerts</h2>
+      </div>
+      <div class="right floated right aligned column">
+        <a class="ui teal button" href="/new_alert/0"><i class="plus icon"></i>Add alert</a>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="ui container">
+  <table class="ui celled small table">
+    <thead>
+      <tr>
+        <th>Name</th>
+        <th>Type</th>
+        <th>Config</th>
+        <th>Status</th>
+        <th>Last alert</th>
+        <th>Actions</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for alert in alerts_manager.alert_list %}
+      <tr>
+        <td data-label="Name"><b>{{alert.name}}</b></td>
+        <td data-label="Type">{{alert.type}}</td>
+        <td data-label="Params">
+          {% for key, value in alert.params.items() %}
+          <div><b>{{key}}:</b> {{value}}</div>
+          {% endfor %}
+        </td>
+        <td data-label="Type">
+          {% if alert.running %}
+            <div class="ui small label green">Running</div>
+          {% else %}
+            <div class="ui small label red">Stopped</div>
+          {% endif %}
+        </td>
+        <td data-label="Last alert">{{alert.last_alert}}</td>
+        <td data-label="Actions">
+          {% if alert.running %}
+            <a href="/stop/{{alert.id}}"><i class="teal stop icon"></i></a>
+          {% else %}
+            <a href="/start/{{alert.id}}"><i class="teal play icon"></i></a>
+          {% endif %}
+          <a href="/delete/{{alert.id}}"><i class="red trash alternative icon"></i></a>
+        </td>
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+</div>
+
+
+<div class="ui center aligned container gris">
+  @ 2021 - Mangusta
+</div>
+
+</body>
+
+<script type="text/javascript">
+  setTimeout( function() {
+    location = ''
+  }, 60000)
+</script>
+
+{% endblock %}

@@ -1,0 +1,12 @@
+venv/
+.env
+
+*.pyc
+__pycache__/
+
+instance/
+
+*.db
+
+gsheets01.json
+

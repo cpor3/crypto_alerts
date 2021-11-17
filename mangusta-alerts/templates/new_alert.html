@@ -1,0 +1,83 @@
+{% extends "layout.html" %}
+{% block content %}
+
+<body>
+
+<div class="ui container">
+  <form method="post" action="/new_alert" class="ui small form" >
+    <div class="field">
+        {% with messages = get_flashed_messages(with_categories=true) %}
+        {% if messages %}
+        {% for category, message in messages %}
+        {% if category == 'error' %}
+        <div class="ui orange inverted segment">
+            {{ message }}
+        </div>
+        {% endif %}
+        {% endfor %}
+        {% endif %}
+        {% endwith %}
+    </div>
+    <div class="field">
+      <label for="selected_type">Type</label>
+      <select type="text" class="ui dropdown" name="selected_type" id="selected_type" value="{{alert_type}}" onchange="new_alert(this.value)">
+        {% for type_name in alerts_manager.get_alert_types() %}
+        <option value="{{ type_name }}" {% if type_name == alert_type %}selected{% endif %}>{{ type_name }}</option>
+        {% endfor %}
+      </select>
+      {% if description != '' %}
+      <div class="ui pointing label">{{description}}</div>
+      {% endif %}
+    </div>
+    <div class="field">
+      <label for="name" class="gris">Name</label>
+      <input type="text" name="name">
+    </div>
+
+    <!-- controles especificos del tipo de alerta -->
+    {% for control in form_controls %}
+    <div class="field">
+      <label for="{{control.name}}" class="gris">{{control.label}}</label>
+      {% if control.control == 'input' %}
+        <input type="{{control.type}}" name="{{control.name}}">
+      {% else %}
+        <select type="{{control.type}}" class="ui search dropdown" name="{{control.name}}" id="{{control.name}}" value="{{control.default_value}}">
+          {% for item in control['values'] %} 
+          <option value="{{ item[1] }}">{{ item[0] }}</option>
+          {% endfor %}
+        </select>
+      {% endif %}
+    </div>
+    {% endfor %}
+
+    <div class="field">
+        <label for="email" class="gris">Email to send alerts</label>
+        <input type="text" name="email">
+    </div>
+    <div class="ui grid">
+      <div class="three column row">
+          <div class="left floated column">
+            <button type="submit" class="ui teal inline button">Add</button>
+          </div>
+          <div class="right floated right aligned column">
+            <a class="ui button" href="/current_alerts">Cancel</a>
+          </div>
+    </div>
+  </form>
+</div>
+
+<div class="ui center aligned container gris">
+  @ 2021 - Mangusta
+</div>
+
+</body>
+
+<script type="text/javascript">
+  $('.ui.dropdown').dropdown();
+
+  function new_alert(alert_type) {
+    window.location.href = `/new_alert/${alert_type}`; 
+  }
+</script>
+  
+{% endblock %}
