@@ -1,4 +1,4 @@
-#Crypto Alerts
+# Crypto Alerts
 
 Toolkit for sending different types of cryptocurrency alerts.
 
