@@ -329,4 +329,8 @@ else:
 		# init_update_thread(UPDATE_INTERVAL)
 
 print('Conectando a Google Sheets...', end='')
-gsheets_client 
+gsheets_client = GSheetsClient(Path(GSHEETS_JSON))
+print('Ok')
+
+
+
