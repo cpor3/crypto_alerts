@@ -3,12 +3,6 @@ from datetime import datetime
 from .utils import id_generator
 from .email import send_email
 
-b=0
-def get_tulip_tvl(vault: str):
-    global b
-    b = b+1 if b+1<10 else 0
-    return b
-
 class Alert(ABC):
     def __init__(self, name: str, email: str, params: dict()):
         self.name = name
@@ -150,6 +144,7 @@ class Llama_TVL_alert(Alert):
                 message = f"Subject: ALERT! - {self.name}\n\nProject: {self.project}\nTVL: {tvl}\nTVL change: {tvl_var}%"
                 self.alert(message)
 
+from .tulip import get_tulip_tvl
 class Tulip_TVL_alert(Alert):
     """
         ##  Tulip TVL Alerts
