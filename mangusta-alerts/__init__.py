@@ -1,7 +1,4 @@
-from flask import Flask, render_template, request, session, redirect, url_for, flash
-from flask.scaffold import _matching_loader_thinks_module_is_package
-import requests
-from requests.sessions import Request
+from flask import Flask, render_template, redirect, url_for, request, flash
 from .Infinite_Thread import Infinite_Thread
 # from flask_sqlalchemy import SQLAlchemy
 # from flask_session import Session
@@ -10,8 +7,6 @@ from .Infinite_Thread import Infinite_Thread
 from . import config
 import threading
 import signal
-from muttlib.gsheetsconn import GSheetsClient
-from pathlib import Path
 import pandas as pd
 from datetime import datetime, timezone, timedelta
 import time
@@ -23,11 +18,6 @@ APP_URI = f'https://{APP}.herokuapp.com'
 # DB_NAME = 'database.db'
 
 UPDATE_INTERVAL = 6 # 6*10 = 60 segundos = 1 minuto
-
-# To be used when writing data to a Google Sheet
-# GSHEETS_JSON = 'gsheets01.json'
-# GSHEETS_SPREADSHEET_ID = '1-Udhrb8lb5tWlmKTsvpboHUsDs1iS9099cmyo5jJNtk'
-# GSHEETS_WORKSHEET = 'Solfarm TVL Tracker'
 
 # db = SQLAlchemy()
 
@@ -155,41 +145,6 @@ def delete(id):
 
 	return redirect(url_for('current_alerts'))
 
-def write_tvl_in_gsheet(tvl):
-	print('Actualizando info de precios en gsheets...')
-
-	# Fila a escribir
-	date = datetime.now(timezone(-timedelta(hours=3))).strftime("%Y-%m-%d, %H:%M:%S")
-	df = pd.DataFrame({'Time': [date], 'Vault': [context_data['selected_vault']], 'TVL': [tvl]})
-
-	# Obtener la ultima fila en blanco
-	try:
-		row_df = gsheets_client.to_frame(
-			spreadsheet=GSHEETS_SPREADSHEET_ID,
-			worksheet=GSHEETS_WORKSHEET,
-			first_cell_loc='A1',
-			num_header_rows=0
-		)
-	except Exception:
-		print('ERROR: no se pudo leer del gsheets.')
-		return
-
-	row = int(row_df.iloc[0, 0]) + 2
-
-	try:
-		gsheets_client.insert_from_frame(
-			df=df, 
-			spreadsheet=GSHEETS_SPREADSHEET_ID, 
-			index=False, 
-			header=False, 
-			first_cell_loc=f'A{row}', 
-			worksheet=GSHEETS_WORKSHEET, 
-			preclean_sheet=False, 
-			freeze_headers=False
-		)
-	except Exception:
-		print('ERROR: no se pudo actualizar la info en gsheets.')
-
 def update_function():	
 	alerts_manager.monitor_alerts()
 
@@ -305,10 +260,14 @@ alerts_manager = Alerts_manager()
 # 	'project': 'uniswap',
 # 	'tvl_change': 1.5
 # })
+alerts_manager.add_alert('Mangusta USD', 'FTX Balance tracker', 'ccamogli@yahoo.com', params={
+	'period': '30',
+	'sub_account': 'RAY2'
+})
 
-# for alert in alerts_manager.alert_list:
-	# message = f"Subject: CryptoAlert ACTIVATED\n\n{alert.name} alert ACTIVATED."
-	# alert.start(message)
+for alert in alerts_manager.alert_list:
+	message = f"Subject: CryptoAlert ACTIVATED\n\n{alert.name} alert ACTIVATED."
+	alert.start(message)
 
 update_thread_active = False
 update_thread_counter = 0
@@ -327,10 +286,5 @@ else:
 		# TODO: recuperar settings para la update thread desde una base de datos
 		# print('Inicializando update thread...')
 		# init_update_thread(UPDATE_INTERVAL)
-
-print('Conectando a Google Sheets...', end='')
-gsheets_client = GSheetsClient(Path(GSHEETS_JSON))
-print('Ok')
-
 
 

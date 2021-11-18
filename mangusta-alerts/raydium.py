@@ -1,5 +1,4 @@
 import requests
-from requests.models import parse_header_links 
 
 RAYDIUM_ENDPOINT = 'https://api.raydium.io'
 

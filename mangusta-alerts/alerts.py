@@ -1,7 +1,8 @@
 from abc import ABC, abstractmethod
-from datetime import datetime
+from datetime import datetime, timezone, timedelta
 from .utils import id_generator
 from .email import send_email
+import pandas as pd
 
 class Alert(ABC):
     def __init__(self, name: str, email: str, params: dict()):
@@ -286,10 +287,74 @@ class Raydium_TVL_alert(Alert):
                 message = f"Subject: ALERT! - {self.name}\n\nPool: {self.pool}\nTVL: {tvl}\nTVL change: {tvl_var}%"
                 self.alert(message)
 
+from .ftx_exchange import ftx_init, get_ftx_balance
+from .gsheets import GoogleSheetsClient
+GSHEETS_JSON = 'gsheets01.json'
+GSHEETS_SPREADSHEET_ID = '1VZWqW79yTQOn4mytu2mQqghtiuGu8E9FwBjm1OJ8-To'
+GSHEETS_WORKSHEET_NAME = 'Mangusta_FTX_tracker'
+class FTX_balance_tracker(Alert):
+    """
+    ##  FTX Balance Tracker
+    Reads FTX balance every 'period' time and registers the value on 'gsheet_name' google sheet
+    Api Key and Secret Key should be defined as environ variables (API_KEY, SECRET_KEY)
+
+    ### Period
+    'period': period in minutes 
+
+    ### Google Sheet
+    'gsheet_name': string, name of the google sheet to write to
+
+    """
+    def __init__(self, name: str, email: str, params: dict()):
+        super().__init__(name, email, params)
+
+        self.description = "Reads FTX balance every 'period' time and registers the value on 'gsheet_name' google sheet.\nApi Key and Secret Key should be defined as environ variables (API_KEY, SECRET_KEY)"
+        self.form_controls = [
+            {
+                'name': 'period',
+                'label': 'Period (in minutes)',
+                'control': 'input',
+                'type': 'text',
+                'default_value': ''            
+            },
+            {
+                'name': 'sub_account',
+                'label': 'FTX Subaccount name (leave blank for main account)',
+                'control': 'input',
+                'type': 'text',
+                'default_value': '' 
+            }
+        ]
+
+        try:
+            self.period = float(self.params['period'])
+            self.gsheet_name = GSHEETS_WORKSHEET_NAME
+            self.sub_account = self.params['sub_account']
+            self.last_time = datetime.now()
+            self.ftx_exchange = ftx_init(sub_account=self.sub_account)
+            self.gsheet_client = GoogleSheetsClient(GSHEETS_JSON, GSHEETS_SPREADSHEET_ID)
+            self.gsheet_client.new_sheet(self.gsheet_name)
+        except Exception:
+            print('Error in params dict')
+
+
+    def monitor_function(self):
+        delta_time = datetime.now() - self.last_time
+        delta_time_minutes = delta_time.seconds / 60
+
+        if delta_time_minutes >= self.period:
+            self.last_time = datetime.now()
+            ftx_balance = get_ftx_balance(self.ftx_exchange)
+            print('FTX balance: ', ftx_balance)
+            date = datetime.now(timezone(-timedelta(hours=3))).strftime("%Y-%m-%d, %H:%M:%S")
+            data = pd.DataFrame({'Fecha y hora': [date], 'Free': [ftx_balance['free']], 'Used': [ftx_balance['used']], 'Total': [ftx_balance['total']]})
+            self.gsheet_client.write_at_bottom(self.gsheet_name, data)
+
 # Por caca nuevo tipo de alerta se implementa la clase y se agrega al listado
 Alert_types = {
     'DeFi TVLs': Llama_TVL_alert,
-    'Raydium Pools TVL variation': Raydium_TVL_alert
+    'Raydium Pools TVL variation': Raydium_TVL_alert,
     # 'Tulip Vaults TVL variation': Tulip_TVL_alert
+    'FTX Balance tracker': FTX_balance_tracker
 }
 
